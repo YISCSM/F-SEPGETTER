@@ -93,31 +93,36 @@ def check_for_data(date):
 # Streamlit app layout
 st.title("FOMC SEP Data Checker")
 
-# Date input for the user to select the SEP date
-date_input = st.date_input("Enter the date of the SEP you want")
-date = datetime.strptime(str(date_input), "%Y-%m-%d")
+# Button for each date
+dates = [
+    "Sep 18, 2024", "Jun 12, 2024", "Mar 20, 2024", "Dec 13, 2023",
+    "Sep 20, 2023", "Jun 14, 2023", "Mar 22, 2023", "Dec 14, 2022",
+    "Sep 21, 2022", "Jun 15, 2022", "Mar 16, 2022"
+]
 
-# Display the selected date
-st.write(f"You selected: {date.strftime('%B %d, %Y')}")
+date_buttons = {date: datetime.strptime(date, "%b %d, %Y") for date in dates}
 
-# Button to fetch data
-if st.button("Fetch Data"):
-    # Retrieve the data based on the selected date
-    df = check_for_data(date)
-    
-    if df is not None:
-        # Show the retrieved data
-        # Format the DataFrame for display
-        formatted_df = df.copy()
+# Create a button for each date
+for date_str, date_obj in date_buttons.items():
+    if st.button(f"Fetch Data for {date_str}"):
+        st.write(f"You selected: {date_str}")
         
-        # Format the 'Change' row values to 2 decimal places
-        formatted_df.loc['Change'] = formatted_df.loc['Change'].apply(lambda x: f"{x:.2f}")
-
-        st.write(formatted_df)
+        # Retrieve the data based on the selected date
+        df = check_for_data(date_obj)
         
-        # Log the retrieval time
-        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        log_time(current_time)
-        st.write(f"Data retrieved at: {current_time}")
-    else:
-        st.error("Data could not be retrieved. Please check the date or try again later.")
+        if df is not None:
+            # Show the retrieved data
+            # Format the DataFrame for display
+            formatted_df = df.copy()
+            
+            # Format the 'Change' row values to 2 decimal places
+            formatted_df.loc['Change'] = formatted_df.loc['Change'].apply(lambda x: f"{x:.2f}")
+
+            st.write(formatted_df)
+            
+            # Log the retrieval time
+            current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            log_time(current_time)
+            st.write(f"Data retrieved at: {current_time}")
+        else:
+            st.error("Data could not be retrieved. Please check the date or try again later.")
