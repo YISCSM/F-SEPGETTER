@@ -91,7 +91,7 @@ def check_for_data(date):
         return None  # If no data is found, return None
 
 # Streamlit app layout
-st.title("FOMC SEP Data Checker")
+st.title("FOMC SEP Rate Checker")
 
 # Button for each date
 dates = [
