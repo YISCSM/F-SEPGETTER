@@ -102,27 +102,37 @@ dates = [
 
 date_buttons = {date: datetime.strptime(date, "%b %d, %Y") for date in dates}
 
-# Create a button for each date
-for date_str, date_obj in date_buttons.items():
-    if st.button(f"Fetch Data for {date_str}"):
-        st.write(f"You selected: {date_str}")
-        
-        # Retrieve the data based on the selected date
-        df = check_for_data(date_obj)
-        
-        if df is not None:
-            # Show the retrieved data
-            # Format the DataFrame for display
-            formatted_df = df.copy()
+# Create columns for the buttons to display them in rows of four
+years = [2024, 2023, 2022]
+for year in years:
+    st.subheader(f"Year {year}")
+    # Split dates by year
+    year_dates = [date_str for date_str in dates if datetime.strptime(date_str, "%b %d, %Y").year == year]
+    
+    # Create a row of 4 buttons for each year
+    cols = st.columns(4)
+    for i, date_str in enumerate(year_dates):
+        date_obj = date_buttons[date_str]
+        date_formatted = date_obj.strftime('%m/%d/%y')  # Format the date to mm/dd/yy
+        if cols[i % 4].button(f"Fetch Data for {date_formatted}"):
+            st.write(f"You selected: {date_formatted}")
             
-            # Format the 'Change' row values to 2 decimal places
-            formatted_df.loc['Change'] = formatted_df.loc['Change'].apply(lambda x: f"{x:.2f}")
+            # Retrieve the data based on the selected date
+            df = check_for_data(date_obj)
+            
+            if df is not None:
+                # Show the retrieved data
+                # Format the DataFrame for display
+                formatted_df = df.copy()
+                
+                # Format the 'Change' row values to 2 decimal places
+                formatted_df.loc['Change'] = formatted_df.loc['Change'].apply(lambda x: f"{x:.2f}")
 
-            st.write(formatted_df)
-            
-            # Log the retrieval time
-            current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            log_time(current_time)
-            st.write(f"Data retrieved at: {current_time}")
-        else:
-            st.error("Data could not be retrieved. Please check the date or try again later.")
+                st.write(formatted_df)
+                
+                # Log the retrieval time
+                current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                log_time(current_time)
+                st.write(f"Data retrieved at: {current_time}")
+            else:
+                st.error("Data could not be retrieved. Please check the date or try again later.")
