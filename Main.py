@@ -95,7 +95,7 @@ st.title("FOMC SEP Data Checker")
 
 # Button for each date
 dates = [
-    "Dec 18 2024", "Sep 18, 2024", "Jun 12, 2024", "Mar 20, 2024", "Dec 13, 2023",
+    "Dec 18, 2024", "Sep 18, 2024", "Jun 12, 2024", "Mar 20, 2024", "Dec 13, 2023",
     "Sep 20, 2023", "Jun 14, 2023", "Mar 22, 2023", "Dec 14, 2022",
     "Sep 21, 2022", "Jun 15, 2022", "Mar 16, 2022"
 ]
