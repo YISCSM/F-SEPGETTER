@@ -81,14 +81,15 @@ def log_time(time_str):
 
 # Function to check for data and return the DataFrame
 def check_for_data(date):
-    # Retrieve the table
-    df = get_table(date)
-    
-    if df is not None:
-        rate = get_rate(df)
-        return rate
-    else:
-        return None  # If no data is found, return None
+    while True:  # Keep trying until data is retrieved
+        # Retrieve the table
+        df = get_table(date)
+        
+        if df is not None:
+            rate = get_rate(df)
+            return rate
+        else:
+            time.sleep(1)  # Wait for 1 second before trying again
 
 # Streamlit app layout
 st.title("FOMC SEP Rate Checker")
@@ -120,19 +121,15 @@ for year in years:
             # Retrieve the data based on the selected date
             df = check_for_data(date_obj)
             
-            if df is not None:
-                # Show the retrieved data
-                # Format the DataFrame for display
-                formatted_df = df.copy()
-                
-                # Format the 'Change' row values to 2 decimal places
-                formatted_df.loc['Change'] = formatted_df.loc['Change'].apply(lambda x: f"{x:.2f}")
+            # Show the retrieved data
+            formatted_df = df.copy()
+            
+            # Format the 'Change' row values to 2 decimal places
+            formatted_df.loc['Change'] = formatted_df.loc['Change'].apply(lambda x: f"{x:.2f}")
 
-                st.write(formatted_df)
+            st.write(formatted_df)
                 
-                # Log the retrieval time
-                current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                log_time(current_time)
-                st.write(f"Data retrieved at: {current_time}")
-            else:
-                st.error("Data could not be retrieved. Please check the date or try again later.")
+            # Log the retrieval time
+            current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            log_time(current_time)
+            st.write(f"Data retrieved at: {current_time}")
